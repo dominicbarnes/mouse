@@ -16,7 +16,7 @@ module.exports = function(el, obj){
 
 /**
  * initialize new `Mouse`.
- * 
+ *
  * @param {Element} el
  * @param {Object} obj
  */
@@ -34,7 +34,7 @@ emitter(Mouse.prototype);
 
 /**
  * bind mouse.
- * 
+ *
  * @return {Mouse}
  */
 
@@ -58,7 +58,7 @@ Mouse.prototype.bind = function(){
 
   // down
   self.down = function(e){
-    if (e.button !== 0) return; // only allow "left-click" to initiate
+    if (!isLeftClick(e)) return;
     obj.onmousedown && obj.onmousedown(e);
     event.bind(document, 'mouseup', up);
     event.bind(document, 'mousemove', move);
@@ -73,7 +73,7 @@ Mouse.prototype.bind = function(){
 
 /**
  * unbind mouse.
- * 
+ *
  * @return {Mouse}
  */
 
@@ -81,3 +81,23 @@ Mouse.prototype.unbind = function(){
   event.unbind(this.el, 'mousedown', this.down);
   this.down = null;
 };
+
+
+/**
+ * Determine if a given event is the result of a left-click
+ * (supports old and new browsers)
+ *
+ * @api private
+ * @param {Event} e
+ */
+function isLeftClick(e) {
+  if (typeof e.which !== "undefined") {
+    if (e.which === 1) return true;
+  }
+
+  if (typeof e.button !== "undefined") {
+    if (e.button & 1) return true;
+  }
+
+  return false;
+}
